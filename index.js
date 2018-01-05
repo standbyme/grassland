@@ -1,7 +1,7 @@
 const Redis = require('ioredis')
 const redis = new Redis(32768, '127.0.0.1')
 
-const lua =
+const acquire_semaphore_lua =
     `
     local timeout = 15000
 
@@ -25,22 +25,22 @@ const lua =
     end
     `
 
-redis.defineCommand('echo', {
+redis.defineCommand('acquire_semaphore', {
     numberOfKeys: 0,
-    lua
+    lua: acquire_semaphore_lua
 });
 
 async function main() {
     const result = await redis.pipeline()
-        .echo('1', '1', '1', Date.now(), '3')
-        .echo('2', '1', '1', Date.now(), '3')
-        .echo('3', '1', '1', Date.now(), '3')
-        .echo('4', '1', '1', Date.now(), '3')
+        .acquire_semaphore('1', '1', '1', Date.now(), '3')
+        .acquire_semaphore('2', '1', '1', Date.now(), '3')
+        .acquire_semaphore('3', '1', '1', Date.now(), '3')
+        .acquire_semaphore('4', '1', '1', Date.now(), '3')
         .exec();
     console.log(result)
 }
 
-main().then(()=>{
+main().then(() => {
     redis.disconnect()
 })
 
