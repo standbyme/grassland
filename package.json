@@ -1,0 +1,23 @@
+{
+  "name": "grassland",
+  "version": "1.0.0",
+  "description": "Data annotation system",
+  "main": "index.js",
+  "dependencies": {
+    "ioredis": "^3.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thegatheringstorm/grassland.git"
+  },
+  "author": "TGS",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thegatheringstorm/grassland/issues"
+  },
+  "homepage": "https://github.com/thegatheringstorm/grassland#readme"
+}
