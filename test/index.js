@@ -2,7 +2,7 @@ const fs = require('fs')
 const Redis = require('ioredis')
 const redis = new Redis(32768, '127.0.0.1')
 
-const config = { acquire_semaphore_lua_script_path: './acquire_semaphore.lua' }
+const config = { acquire_semaphore_lua_script_path: '../src/lua/acquire_semaphore.lua' }
 
 const acquire_semaphore_lua = fs.readFileSync(config.acquire_semaphore_lua_script_path).toString()
 
