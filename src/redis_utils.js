@@ -1,5 +1,6 @@
 const config = {
     semaphore_timeout: 900000,
+    // 900000ms is 15min
     redis: {
         host: '127.0.0.1',
         port: 32768
