@@ -27,18 +27,22 @@ const mock_config = {
     ]
 }
 
-
-const promises_1 = mock_config.user_ids.slice(0, 3)
-    .map((m) => redis_utils.acquire_semaphore(redis, m, '1', '1', 3))
-
-Promise.all(promises_1).then((result) => {
-    console.log(result)
-    redis.disconnect()
-}).catch((err) => {
-    console.log(err)
-    redis.disconnect()
-})
-
 async function main() {
+    const result_1 = await Promise.all(
+        mock_config
+            .user_ids
+            .slice(0, 3)
+            .map((m) => redis_utils.acquire_semaphore(redis, m, '1', '1', 3))
+    )
+    console.log(result_1)
 
 }
+
+main()
+    .then((result) => {
+        redis.disconnect()
+    })
+    .catch((err) => {
+        console.log(err)
+        redis.disconnect()
+    })
