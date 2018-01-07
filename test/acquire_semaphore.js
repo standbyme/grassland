@@ -16,14 +16,17 @@ describe('Acquire Semaphore', function () {
         const redis_utils = require('../src/redis_utils.js')
 
         const config = {
-            acquire_semaphore_lua_script_path: './src/lua/acquire_semaphore.lua',
+            acquire_semaphore_lua_script_patch_path: './test/lua_patch/acquire_semaphore.patch.lua',
+            acquire_semaphore_lua_script_path: './src/lua/acquire_semaphore.lua'
         }
 
-        const acquire_semaphore_lua = fs.readFileSync(config.acquire_semaphore_lua_script_path).toString()
+        const acquire_semaphore_lua_script_patch = fs.readFileSync(config.acquire_semaphore_lua_script_patch_path).toString()
+        const acquire_semaphore_lua_script_main = fs.readFileSync(config.acquire_semaphore_lua_script_path).toString()
+        const acquire_semaphore_lua_script = acquire_semaphore_lua_script_patch + acquire_semaphore_lua_script_main
 
         redis.defineCommand('acquire_semaphore', {
             numberOfKeys: 0,
-            lua: acquire_semaphore_lua
+            lua: acquire_semaphore_lua_script
         })
 
         const mock_config = {
