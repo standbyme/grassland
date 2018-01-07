@@ -8,12 +8,10 @@ describe('Acquire Semaphore', function () {
     this.slow(9000)
 
     it('test hahahaha', async function () {
-        const Redis = require('ioredis')
-        const redis = new Redis(32768, '127.0.0.1')
-
         const fs = require('fs')
 
         const redis_utils = require('../src/redis_utils.js')
+        const redis = redis_utils.connect()
 
         const config = {
             acquire_semaphore_lua_script_patch_path: './test/lua_patch/acquire_semaphore.patch.lua',
