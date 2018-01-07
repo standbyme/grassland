@@ -4,8 +4,8 @@ function sleep(ms) {
 }
 
 describe('Acquire Semaphore', function () {
-    this.timeout(7000)
-    this.slow(7000)
+    this.timeout(600)
+    this.slow(550)
 
     it('test hahahaha', async function () {
         const Redis = require('ioredis')
