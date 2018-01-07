@@ -28,7 +28,7 @@ function acquire_semaphore(redis, user_id, project_id, question_id, limit, timeo
 }
 
 function acquire_question(redis, user_id, project_id, limit) {
-    return redis.acquire_question(user_id, project_id, limit)
+    return redis.acquire_question(user_id, project_id, limit, Date.now())
 }
 
 exports.raw_connector = raw_connector
