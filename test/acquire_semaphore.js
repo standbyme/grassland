@@ -20,6 +20,7 @@ describe('Acquire Semaphore', function () {
             acquire_semaphore_lua_script_path: './src/lua/acquire_semaphore.lua'
         }
 
+        //patch is only used in test 
         const acquire_semaphore_lua_script_patch = fs.readFileSync(config.acquire_semaphore_lua_script_patch_path).toString()
         const acquire_semaphore_lua_script_main = fs.readFileSync(config.acquire_semaphore_lua_script_path).toString()
         const acquire_semaphore_lua_script = acquire_semaphore_lua_script_patch + acquire_semaphore_lua_script_main
