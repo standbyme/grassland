@@ -16,22 +16,29 @@ redis.defineCommand('acquire_semaphore', {
     lua: acquire_semaphore_lua
 })
 
-async function main() {
-    const result = await redis_utils.acquire_semaphore(redis, '1', '1', '1', '3')
-
-    // redis.pipeline()
-    // .acquire_semaphore('1', '1', '1', Date.now(), '5', '15000')
-    // .acquire_semaphore('2', '1', '1', Date.now(), '5', '15000')
-    // .acquire_semaphore('3', '1', '1', Date.now(), '5', '15000')
-    // .acquire_semaphore('4', '1', '1', Date.now(), '5', '15000')
-    // .acquire_semaphore('7', '1', '1', Date.now(), '5', '15000')
-    // .acquire_semaphore('9', '1', '1', Date.now(), '5', '15000')
-    // .exec();
-    console.log(result)
+const mock_config = {
+    user_ids: [
+        '5a51ebd0e85539e9b2633e00',
+        '5a51ebd0e85539e9b2633e01',
+        '5a51ebd0e85539e9b2633e02',
+        '5a51ebd0e85539e9b2633e03',
+        '5a51ebd0e85539e9b2633e04',
+        '5a51ebd0e85539e9b2633e05'
+    ]
 }
 
-main().then(() => {
+
+const promises_1 = mock_config.user_ids.slice(0, 3)
+    .map((m) => redis_utils.acquire_semaphore(redis, m, '1', '1', 3))
+
+Promise.all(promises_1).then((result) => {
+    console.log(result)
     redis.disconnect()
 }).catch((err) => {
     console.log(err)
+    redis.disconnect()
 })
+
+async function main() {
+
+}
