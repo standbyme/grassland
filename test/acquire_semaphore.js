@@ -11,7 +11,7 @@ describe('Acquire Semaphore', function () {
         const fs = require('fs')
 
         const redis_utils = require('../src/redis_utils.js')
-        const redis = redis_utils.connect()
+        const redis = redis_utils.raw_connector()
 
         const config = {
             acquire_semaphore_lua_script_patch_path: './test/lua_patch/acquire_semaphore.patch.lua',
