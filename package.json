@@ -6,9 +6,7 @@
   "dependencies": {
     "ioredis": "^3.2.2"
   },
-  "devDependencies": {
-    "eslint": "^4.14.0"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
