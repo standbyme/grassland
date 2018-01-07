@@ -1,10 +1,14 @@
 const config = {
-    timeout: 900000
+    semaphore_timeout: 900000,
+    redis: {
+        host: '127.0.0.1',
+        port: 32768
+    }
 }
 
 function raw_connector() {
     const Redis = require('ioredis')
-    const redis = new Redis(32768, '127.0.0.1')
+    const redis = new Redis(config.redis.port, config.redis.host)
 
     return redis
 }
@@ -18,7 +22,7 @@ function connector() {
     return redis
 }
 
-function acquire_semaphore(redis, user_id, project_id, question_id, limit, timeout = config.timeout) {
+function acquire_semaphore(redis, user_id, project_id, question_id, limit, timeout = config.semaphore_timeout) {
     return redis.acquire_semaphore(user_id, project_id, question_id, Date.now(), limit, timeout)
 }
 

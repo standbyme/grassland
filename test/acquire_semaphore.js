@@ -7,7 +7,7 @@ describe('Acquire Semaphore', function () {
     this.timeout(10000)
     this.slow(9000)
 
-    it('test hahahaha', async function () {
+    it('basic test', async function () {
         const fs = require('fs')
 
         const redis_utils = require('../src/redis_utils.js')
