@@ -10,7 +10,7 @@
     "mocha": "^4.1.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -t 40000"
   },
   "repository": {
     "type": "git",
