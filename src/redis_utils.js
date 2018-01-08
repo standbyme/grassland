@@ -26,16 +26,16 @@ function define_command(redis) {
             if (_.isEmpty(dependencies)) {
                 return main_command_lua_script
             } else {
-                const dependency = dependencies.reduce((result, dependency_command_name) => {
+                const dependency_command_name_with_file_content = _.zipObject(dependencies, dependencies.map((dependency_command_name) => {
                     const dependency_command_lua_script_path = util.format(config.lua_script_path, dependency_command_name)
                     const dependency_command_lua_script = fs.readFileSync(dependency_command_lua_script_path).toString()
-                    result[dependency_command_name] = dependency_command_lua_script
-                    return result
-                }, {})
+                    return dependency_command_lua_script
+                }))
+
                 // dependencies is like ['acquire_question']
-                // dependency is like {'acquire_question':the file content}
+                // dependency_command_name_with_file_content is like {'acquire_question':the file content}
                 const compiled = _.template(main_command_lua_script)
-                return compiled(dependency)
+                return compiled(dependency_command_name_with_file_content)
             }
         })()
 
