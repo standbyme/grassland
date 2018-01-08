@@ -9,19 +9,36 @@ const config = {
 function define_command(redis) {
     const fs = require('fs')
     const util = require('util')
-    const _ = require('lodash/string')
+    const _ = require('lodash')
 
-    const commands = [
-        'acquire_question'
-    ]
+    const commands = {
+        'acquire_question': ['acquire_semaphore']
+    }
 
     const config = {
         lua_script_path: './src/lua/%s.lua'
     }
 
-    commands.forEach((command_name) => {
-        const command_lua_script_path = util.format(config.lua_script_path, command_name)
-        const command_lua_script = fs.readFileSync(command_lua_script_path).toString()
+    _.forOwn(commands, function (dependencies, command_name) {
+        const main_command_lua_script_path = util.format(config.lua_script_path, command_name)
+        const main_command_lua_script = fs.readFileSync(main_command_lua_script_path).toString()
+        const command_lua_script = (() => {
+            if (_.isEmpty(dependencies)) {
+                return main_command_lua_script
+            } else {
+                const dependency = dependencies.reduce((result, dependency_command_name) => {
+                    const dependency_command_lua_script_path = util.format(config.lua_script_path, dependency_command_name)
+                    const dependency_command_lua_script = fs.readFileSync(dependency_command_lua_script_path).toString()
+                    result[dependency_command_name] = dependency_command_lua_script
+                    return result
+                }, {})
+                // dependencies is like ['acquire_question']
+                // dependency is like {'acquire_question':the file content}
+                const compiled = _.template(main_command_lua_script)
+                return compiled(dependency)
+            }
+        })()
+
         redis.defineCommand(command_name, {
             numberOfKeys: 0,
             lua: command_lua_script

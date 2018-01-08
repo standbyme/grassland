@@ -6,7 +6,7 @@ local now = tonumber(ARGV[4])
 local project_name = string.format("project/%s",project_id)
 
 local function acquire_semaphore()
-    return 666
+    <%= acquire_semaphore %>
 end
 
 local function acquire_specific_rank_question(rank)
