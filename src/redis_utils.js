@@ -8,14 +8,25 @@ const config = {
 }
 function define_command(redis) {
     const fs = require('fs')
+    const util = require('util')
+
+    const commands = [
+        'acquire_question'
+    ]
+
     const config = {
-        acquire_question_lua_script_path: './src/lua/acquire_question.lua'
+        lua_script_path: './src/lua/%s.lua'
     }
-    const acquire_question_lua_script = fs.readFileSync(config.acquire_question_lua_script_path).toString()
-    redis.defineCommand('acquire_question', {
-        numberOfKeys: 0,
-        lua: acquire_question_lua_script
+
+    commands.forEach((command_name) => {
+        const command_lua_script_path = util.format(config.lua_script_path, command_name)
+        const command_lua_script = fs.readFileSync(command_lua_script_path).toString()
+        redis.defineCommand(command_name, {
+            numberOfKeys: 0,
+            lua: command_lua_script
+        })
     })
+
     return redis
 }
 function raw_connector() {
