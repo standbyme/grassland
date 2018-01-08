@@ -12,7 +12,15 @@ local function acquire_specific_rank_question(rank)
     then
         return nil
     else
-        return question_id
+        local record_name = string.format("record/%s/%s",project_id,question_id)
+        -- record is the finished user list of question
+        if(redis.call('sismember',record_name,user_id)==1)
+        -- if user exists in record(the user has finished this question)
+        then
+            return acquire_specific_rank_question(rank+1)
+        else
+            return question_id
+        end
     end
 end
 
