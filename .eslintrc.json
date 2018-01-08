@@ -26,6 +26,12 @@
         "semi": [
             "error",
             "never"
+        ],
+        "no-await-in-loop": [
+            "error"
+        ],
+        "for-direction": [
+            "error"
         ]
     }
 }
