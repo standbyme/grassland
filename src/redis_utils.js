@@ -32,5 +32,6 @@ function acquire_question(redis, user_id, project_id, limit) {
 }
 
 exports.raw_connector = raw_connector
+exports.connector = connector
 exports.acquire_semaphore = acquire_semaphore
 exports.acquire_question = acquire_question
