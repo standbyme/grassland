@@ -15,11 +15,19 @@ function raw_connector() {
 }
 
 function connector() {
+    const fs = require('fs')
+    const config = {
+        acquire_question_lua_script_path: './src/lua/acquire_question.lua'
+    }
+    const acquire_question_lua_script = fs.readFileSync(config.acquire_question_lua_script_path).toString()
+
     const redis = raw_connector()
-    // redis.defineCommand('acquire_semaphore', {
-    //     numberOfKeys: 0,
-    //     lua: acquire_semaphore_lua_script
-    // })
+
+    redis.defineCommand('acquire_question', {
+        numberOfKeys: 0,
+        lua: acquire_question_lua_script
+    })
+
     return redis
 }
 
