@@ -9,6 +9,7 @@ const config = {
 function define_command(redis) {
     const fs = require('fs')
     const util = require('util')
+    const _ = require('lodash/string')
 
     const commands = [
         'acquire_question'
