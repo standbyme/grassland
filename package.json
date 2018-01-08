@@ -4,7 +4,8 @@
   "description": "Data annotation system",
   "main": "index.js",
   "dependencies": {
-    "ioredis": "^3.2.2"
+    "ioredis": "^3.2.2",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "mocha": "^4.1.0"
