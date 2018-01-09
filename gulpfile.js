@@ -10,17 +10,15 @@ gulp.task('clean', function () {
     return del(['dist/*'])
 })
 
-gulp.task('tsc', gulp.series('clean', function typescript() {
+gulp.task('compile', gulp.series('clean', function compile_func() {
     return tsProject.src()
         .pipe(tsProject())
         .js.pipe(gulp.dest('dist'))
 }))
 
-gulp.task('test', function () {
+gulp.task('test', gulp.series('compile', function test_func() {
     return gulp.src(['dist/test/**/**.js'], { read: false })
         .pipe(mocha({
             reporter: 'spec'
         }))
-})
-
-// gulp.task('compile', ['clean', 'tsc'])
+}))
