@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 
-function sleep(ms) {
+function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
@@ -23,7 +23,7 @@ describe('Acquire Semaphore', function () {
             acquire_semaphore_lua_script_path: './src/lua/acquire_semaphore.lua'
         }
 
-        //patch is only used in test 
+        // patch is only used in test
         const acquire_semaphore_lua_script_patch = fs.readFileSync(config.acquire_semaphore_lua_script_patch_path).toString()
         const acquire_semaphore_lua_script_main = fs.readFileSync(config.acquire_semaphore_lua_script_path).toString()
         const acquire_semaphore_lua_script = acquire_semaphore_lua_script_patch + acquire_semaphore_lua_script_main
@@ -97,12 +97,12 @@ describe('Acquire Semaphore', function () {
         )
         await redis.disconnect()
 
-        assert(result_1.every((m) => m == 1))
+        assert(result_1.every((m) => m === 1))
         assert(result_2.every((m) => m == null))
-        assert(result_3.every((m) => m == 1))
-        assert(result_4.every((m) => m == 1))
+        assert(result_3.every((m) => m === 1))
+        assert(result_4.every((m) => m === 1))
         assert(result_5.every((m) => m == null))
-        assert(result_6.every((m) => m == 1))
+        assert(result_6.every((m) => m === 1))
         assert(result_7.every((m) => m == null))
     })
 })
