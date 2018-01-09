@@ -1,8 +1,3 @@
 {
-    "eslint.autoFixOnSave": true,
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript"
-    ]
+    "eslint.autoFixOnSave": true
 }
