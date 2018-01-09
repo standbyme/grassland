@@ -32,6 +32,9 @@
         ],
         "for-direction": [
             "error"
+        ],
+        "no-var": [
+            "error"
         ]
     }
 }
