@@ -1,4 +1,5 @@
-import assert = require('assert')
+import * as assert from 'assert'
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }

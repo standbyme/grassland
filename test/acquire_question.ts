@@ -1,4 +1,4 @@
-import assert = require('assert')
+import * as assert from 'assert'
 
 describe('Acquire Question', function () {
     this.slow(1000)
