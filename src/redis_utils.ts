@@ -49,12 +49,14 @@ function define_command(redis) {
 
     return redis
 }
+/* tslint:disable:variable-name*/
 function raw_connector() {
     const Redis = require('ioredis')
     const redis = new Redis(config.redis.port, config.redis.host)
 
     return redis
 }
+/* tslint:enable:variable-name*/
 
 function connector() {
     const redis = raw_connector()
