@@ -10,11 +10,11 @@ gulp.task('clean', function () {
     return del(['dist/*'])
 })
 
-gulp.task('tsc', ['clean'], function () {
+gulp.task('tsc', gulp.series('clean', function typescript() {
     return tsProject.src()
         .pipe(tsProject())
         .js.pipe(gulp.dest('dist'))
-})
+}))
 
 gulp.task('test', function () {
     return gulp.src(['dist/test/**/**.js'], { read: false })
@@ -23,4 +23,4 @@ gulp.task('test', function () {
         }))
 })
 
-gulp.task('compile', ['clean', 'tsc'])
+// gulp.task('compile', ['clean', 'tsc'])
