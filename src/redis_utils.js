@@ -32,7 +32,7 @@ function define_command(redis) {
                     return { [dependency_command_name]: dependency_command_lua_script }
                 })
 
-                const dependency_command_name_with_file_content = Object.assign({}, ...dependency_command_name_with_file_content__list)
+                const dependency_command_name_with_file_content = _.merge(...dependency_command_name_with_file_content__list)
 
                 // dependencies is like ['acquire_question']
                 // dependency_command_name_with_file_content is like {'acquire_question':the file content}
