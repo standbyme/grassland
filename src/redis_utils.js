@@ -26,11 +26,13 @@ function define_command(redis) {
             if (_.isEmpty(dependencies)) {
                 return main_command_lua_script
             } else {
-                const dependency_command_name_with_file_content = _.zipObject(dependencies, dependencies.map((dependency_command_name) => {
+                const dependency_command_name_with_file_content__list = dependencies.map((dependency_command_name) => {
                     const dependency_command_lua_script_path = util.format(config.lua_script_path, dependency_command_name)
                     const dependency_command_lua_script = fs.readFileSync(dependency_command_lua_script_path).toString()
-                    return dependency_command_lua_script
-                }))
+                    return { [dependency_command_name]: dependency_command_lua_script }
+                })
+
+                const dependency_command_name_with_file_content = Object.assign({}, ...dependency_command_name_with_file_content__list)
 
                 // dependencies is like ['acquire_question']
                 // dependency_command_name_with_file_content is like {'acquire_question':the file content}
