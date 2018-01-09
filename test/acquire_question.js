@@ -3,7 +3,7 @@ const assert = require('assert')
 describe('Acquire Question', function () {
     this.slow(1000)
 
-    const redis_utils = require('../src/redis_utils.js')
+    const redis_utils = require('../src/redis_utils')
     const redis = redis_utils.connector()
 
     before(function () {

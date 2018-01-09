@@ -7,7 +7,7 @@ describe('Acquire Semaphore', function () {
     this.timeout(10000)
     this.slow(9000)
 
-    const redis_utils = require('../src/redis_utils.js')
+    const redis_utils = require('../src/redis_utils')
     const redis = redis_utils.raw_connector()
 
     before(function () {
