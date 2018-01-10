@@ -5,7 +5,7 @@ const redis_config = {
     // 900000ms is 15min
     redis: {
         host: '127.0.0.1',
-        port: 32768
+        port: 6379
     }
 }
 function define_command(redis: Redis.Redis) {
