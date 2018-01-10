@@ -13,9 +13,16 @@ function define_command(redis: Redis.Redis) {
     const util = require('util')
     const _ = require('lodash')
 
-    const commands = {
-        'acquire_question': ['acquire_semaphore']
+    interface CommandsInterface {
+        [propName: string]: string[]
     }
+
+    const commands: CommandsInterface = {
+        'acquire_question': ['acquire_semaphore'],
+        'aaa': 233
+    }
+
+    const a: number = 'dsda'
 
     const config = {
         lua_script_path: './src/lua/%s.lua'
