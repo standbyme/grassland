@@ -8,7 +8,7 @@ const config = {
         port: 32768
     }
 }
-function define_command(redis) {
+function define_command(redis: Redis.Redis) {
     const fs = require('fs')
     const util = require('util')
     const _ = require('lodash')
@@ -52,7 +52,7 @@ function define_command(redis) {
     return redis
 }
 /* tslint:disable:variable-name*/
-function raw_connector() {
+function raw_connector(): Redis.Redis {
     // const Redis = require('ioredis')
     const redis = new Redis(config.redis.port, config.redis.host)
 
@@ -66,7 +66,8 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_semaphore(redis, user_id: string, project_id: string, question_id: string, limit: number, timeout: number = config.semaphore_timeout) {
+function acquire_semaphore(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, limit: number, timeout: number = config.semaphore_timeout) {
+    // @ts-ignore: acquire_semaphore is defined by Lua
     return redis.acquire_semaphore(user_id, project_id, question_id, Date.now(), limit, timeout)
 }
 
