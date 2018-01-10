@@ -1,3 +1,5 @@
+import * as Redis from 'ioredis'
+
 const config = {
     semaphore_timeout: 900000,
     // 900000ms is 15min
@@ -51,7 +53,7 @@ function define_command(redis) {
 }
 /* tslint:disable:variable-name*/
 function raw_connector() {
-    const Redis = require('ioredis')
+    // const Redis = require('ioredis')
     const redis = new Redis(config.redis.port, config.redis.host)
 
     return redis
