@@ -29,7 +29,7 @@ describe('Temp Acquire Question', function () {
         const result_2 = await redis.get(key)
         await redis.disconnect()
 
-        assert.equal(result_1, 123)
+        assert.equal(result_1, 0)
         assert.equal(result_2, null)
     })
 })
