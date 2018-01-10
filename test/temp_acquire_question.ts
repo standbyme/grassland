@@ -22,7 +22,7 @@ describe('Temp Acquire Question', function () {
             'project_id': '2',
             'question_id': '3'
         }
-        const key = `${mock_config.user_id}/${mock_config.project_id}/${mock_config.question_id}`
+        const key = `cache/${mock_config.user_id}/${mock_config.project_id}/${mock_config.question_id}`
         await redis_utils.temp_acquire_question(redis, mock_config.user_id, mock_config.project_id, mock_config.question_id, 1)
         const result_1 = await redis.get(key)
         await sleep(1)
