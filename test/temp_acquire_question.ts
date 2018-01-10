@@ -20,6 +20,6 @@ describe('Temp Acquire Question', function () {
         const result = await redis_utils.temp_acquire_question(redis, mock_config.user_id, mock_config.project_id, mock_config.question_id, 900)
         await redis.disconnect()
 
-        assert.equal(result, `${mock_config.user_id}/${mock_config.project_id}/${mock_config.question_id}`)
+        assert.equal(result, 123)
     })
 })
