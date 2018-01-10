@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 
-describe('Acquire Question', function () {
+describe('Acquire Question Back', function () {
     this.slow(1000)
 
     const redis_utils = require('../src/redis_utils')
@@ -21,7 +21,7 @@ describe('Acquire Question', function () {
         }
 
         await redis.zadd(`project/${mock_config.project_id}`, 6, mock_config.question_id__list[0], 3, mock_config.question_id__list[1], 1, mock_config.question_id__list[2])
-        const result_1 = await redis_utils.acquire_question(redis, 2, mock_config.project_id, 4)
+        const result_1 = await redis_utils.acquire_question_back(redis, 2, mock_config.project_id, 4)
         // result_1 maybe null !!
 
         await redis.disconnect()

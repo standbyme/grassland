@@ -18,7 +18,7 @@ function define_command(redis: Redis.Redis) {
     }
 
     const commands: CommandsInterface = {
-        'acquire_question': ['acquire_semaphore'],
+        'acquire_question_back': ['acquire_semaphore'],
         'temp_acquire_question': []
     }
 
@@ -75,9 +75,9 @@ function acquire_semaphore(redis: Redis.Redis, user_id: string, project_id: stri
     return redis.acquire_semaphore(user_id, project_id, question_id, Date.now(), limit, timeout)
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, limit: number) {
-    // @ts-ignore: acquire_question is defined by Lua
-    return redis.acquire_question(user_id, project_id, limit, Date.now())
+function acquire_question_back(redis: Redis.Redis, user_id: string, project_id: string, limit: number) {
+    // @ts-ignore: acquire_question_back is defined by Lua
+    return redis.acquire_question_back(user_id, project_id, limit, Date.now())
 }
 
 function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.semaphore_timeout) {
@@ -88,5 +88,5 @@ function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: 
 exports.raw_connector = raw_connector
 exports.connector = connector
 exports.acquire_semaphore = acquire_semaphore
-exports.acquire_question = acquire_question
+exports.acquire_question_back = acquire_question_back
 export { raw_connector, connector, temp_acquire_question }
