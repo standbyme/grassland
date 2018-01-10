@@ -53,7 +53,6 @@ function define_command(redis: Redis.Redis) {
 }
 /* tslint:disable:variable-name*/
 function raw_connector(): Redis.Redis {
-    // const Redis = require('ioredis')
     const redis = new Redis(redis_config.redis.port, redis_config.redis.host)
 
     return redis
