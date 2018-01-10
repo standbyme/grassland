@@ -2,8 +2,8 @@ import * as assert from 'assert'
 
 import * as redis_utils from '../src/redis_utils'
 
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+function sleep(s: number) {
+    return new Promise(resolve => setTimeout(resolve, s * 1000))
 }
 
 describe('Temp Acquire Question', function () {
@@ -23,9 +23,9 @@ describe('Temp Acquire Question', function () {
             'question_id': '3'
         }
         const key = `${mock_config.user_id}/${mock_config.project_id}/${mock_config.question_id}`
-        await redis_utils.temp_acquire_question(redis, mock_config.user_id, mock_config.project_id, mock_config.question_id, 900)
+        await redis_utils.temp_acquire_question(redis, mock_config.user_id, mock_config.project_id, mock_config.question_id, 1)
         const result_1 = await redis.get(key)
-        await sleep(5000)
+        await sleep(1)
         const result_2 = await redis.get(key)
         await redis.disconnect()
 

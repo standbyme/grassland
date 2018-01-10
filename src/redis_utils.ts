@@ -82,7 +82,7 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
 
 function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.semaphore_timeout) {
     // @ts-ignore: temp_acquire_question is defined by Lua
-    return redis.temp_acquire_question(user_id, project_id, question_id)
+    return redis.temp_acquire_question(user_id, project_id, question_id, timeout)
 }
 
 exports.raw_connector = raw_connector
