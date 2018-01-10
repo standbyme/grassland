@@ -5,8 +5,9 @@
     ],
     "compilerOptions": {
         "noImplicitAny": true,
-        "target": "es6",
+        "target": "es2017",
         "module": "commonjs",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "removeComments": true
     }
 }
