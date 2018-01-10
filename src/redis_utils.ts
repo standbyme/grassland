@@ -64,11 +64,11 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_semaphore(redis, user_id, project_id, question_id, limit, timeout = config.semaphore_timeout) {
+function acquire_semaphore(redis, user_id: string, project_id: string, question_id: string, limit: number, timeout: number = config.semaphore_timeout) {
     return redis.acquire_semaphore(user_id, project_id, question_id, Date.now(), limit, timeout)
 }
 
-function acquire_question(redis, user_id, project_id, limit) {
+function acquire_question(redis, user_id: string, project_id: string, limit: number) {
     return redis.acquire_question(user_id, project_id, limit, Date.now())
 }
 
