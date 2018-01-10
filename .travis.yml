@@ -5,5 +5,3 @@ services:
   - redis-server
 install:
   - npm install --dev
-script:
-  - npm test
