@@ -89,4 +89,4 @@ exports.raw_connector = raw_connector
 exports.connector = connector
 exports.acquire_semaphore = acquire_semaphore
 exports.acquire_question = acquire_question
-export { connector, temp_acquire_question }
+export { raw_connector, connector, temp_acquire_question }
