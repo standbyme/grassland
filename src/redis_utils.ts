@@ -21,7 +21,7 @@ function define_command(redis: Redis.Redis) {
         lua_script_path: './src/lua/%s.lua'
     }
 
-    _.forOwn(commands, function (dependencies, command_name) {
+    _.forOwn(commands, function (dependencies: string[], command_name: string) {
         const main_command_lua_script_path = util.format(config.lua_script_path, command_name)
         const main_command_lua_script = fs.readFileSync(main_command_lua_script_path).toString()
         const command_lua_script = (() => {
@@ -66,7 +66,7 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_semaphore(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, limit: number, timeout: number = config.semaphore_timeout) {
+function acquire_semaphore(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, limit: number, timeout: number = redis_config.semaphore_timeout) {
     // @ts-ignore: acquire_semaphore is defined by Lua
     return redis.acquire_semaphore(user_id, project_id, question_id, Date.now(), limit, timeout)
 }
