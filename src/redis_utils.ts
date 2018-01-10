@@ -18,11 +18,8 @@ function define_command(redis: Redis.Redis) {
     }
 
     const commands: CommandsInterface = {
-        'acquire_question': ['acquire_semaphore'],
-        'aaa': 233
+        'acquire_question': ['acquire_semaphore']
     }
-
-    const a: number = 'dsda'
 
     const config = {
         lua_script_path: './src/lua/%s.lua'
