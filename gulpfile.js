@@ -10,9 +10,12 @@ gulp.task('clean', function () {
     return del(['dist/*'])
 })
 
-gulp.task('compile', gulp.series('clean', function compile_func() {
+gulp.task('compile', gulp.series('clean', function compile_func(done) {
     return tsProject.src()
         .pipe(tsProject())
+        .on('error', function () {
+            done('TS compile fail')
+        })
         .js.pipe(gulp.dest('dist'))
 }))
 
