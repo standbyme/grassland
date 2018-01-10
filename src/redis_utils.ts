@@ -1,6 +1,6 @@
 import * as Redis from 'ioredis'
 
-const config = {
+const redis_config = {
     semaphore_timeout: 900000,
     // 900000ms is 15min
     redis: {
@@ -54,7 +54,7 @@ function define_command(redis: Redis.Redis) {
 /* tslint:disable:variable-name*/
 function raw_connector(): Redis.Redis {
     // const Redis = require('ioredis')
-    const redis = new Redis(config.redis.port, config.redis.host)
+    const redis = new Redis(redis_config.redis.port, redis_config.redis.host)
 
     return redis
 }
@@ -71,7 +71,8 @@ function acquire_semaphore(redis: Redis.Redis, user_id: string, project_id: stri
     return redis.acquire_semaphore(user_id, project_id, question_id, Date.now(), limit, timeout)
 }
 
-function acquire_question(redis, user_id: string, project_id: string, limit: number) {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, limit: number) {
+    // @ts-ignore: acquire_question is defined by Lua
     return redis.acquire_question(user_id, project_id, limit, Date.now())
 }
 
