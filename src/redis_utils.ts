@@ -1,5 +1,5 @@
+import * as crypto from 'crypto'
 import * as Redis from 'ioredis'
-
 const redis_config = {
     lock_timeout: 900,
     // 900s is 15min
@@ -71,8 +71,14 @@ function connector() {
 }
 
 function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout) {
+    const secret = 'grassland'
+    const sha1_timestamp = crypto.createHmac('sha256', secret)
+        .update(Date.now().toString())
+        .digest('hex')
+        .slice(0, 6)
+    const lock_id = `${user_id}-${sha1_timestamp}`
     // @ts-ignore: acquire_question is defined by Lua
-    return redis.acquire_question(user_id, project_id, timeout)
+    return redis.acquire_question(user_id, project_id, timeout, lock_id)
 }
 
 function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.lock_timeout) {

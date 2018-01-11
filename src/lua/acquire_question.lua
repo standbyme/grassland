@@ -1,6 +1,7 @@
 local user_id = ARGV[1]
 local project_id = ARGV[2]
 local timeout = tonumber(ARGV[3])
+local lock_id = ARGV[4]
 
 local bucket_indics_of_project_key = string.format("project/%s",project_id)
 local bucket_indix_of_user_project_key = string.format("bucket_index/%s/%s",user_id,project_id)
