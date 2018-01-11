@@ -81,9 +81,9 @@ function acquire_question_back(redis: Redis.Redis, user_id: string, project_id: 
     return redis.acquire_question_back(user_id, project_id, limit, Date.now())
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string) {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.semaphore_timeout) {
     // @ts-ignore: acquire_question is defined by Lua
-    return redis.acquire_question(user_id, project_id)
+    return redis.acquire_question(user_id, project_id, timeout)
 }
 
 function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.semaphore_timeout) {
