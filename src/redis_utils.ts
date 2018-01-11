@@ -1,7 +1,7 @@
 import * as Redis from 'ioredis'
 
 const redis_config = {
-    semaphore_timeout: 900000,
+    lock_timeout: 900000,
     // 900000ms is 15min
     redis: {
         host: '127.0.0.1',
@@ -70,12 +70,12 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.semaphore_timeout) {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout) {
     // @ts-ignore: acquire_question is defined by Lua
     return redis.acquire_question(user_id, project_id, timeout)
 }
 
-function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.semaphore_timeout) {
+function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.lock_timeout) {
     // @ts-ignore: temp_acquire_question is defined by Lua
     return redis.temp_acquire_question(user_id, project_id, question_id, timeout)
 }
