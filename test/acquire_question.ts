@@ -12,19 +12,23 @@ describe('Acquire Question', function () {
 
     const redis = redis_utils.connector()
 
-    before(function () {
+    beforeEach(function () {
         redis.flushall()
     })
 
-    it('basic test', async function () {
+    it('should return null if there is not any project named given project_id', async function () {
         const mock_config = {
-            'user_id': '1',
-            'project_id': '2',
-            'question_id': '3'
+            'user_id': '6',
+            'empty_project_id': '4',
+            'project_id': '2'
         }
-        const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.project_id)
-        await redis.disconnect()
+        await redis.zadd(`project/${mock_config.project_id}`, '4', '4', '7', '7', '16', '16', '32', '32')
+        const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.empty_project_id)
 
-        assert.equal(result, 6)
+        assert.equal(result, null)
+    })
+
+    after(async function () {
+        await redis.disconnect()
     })
 })
