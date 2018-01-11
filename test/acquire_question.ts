@@ -27,14 +27,14 @@ describe('Acquire Question', function () {
         assert.equal(result, null)
     })
 
-    it('basic test', async function () {
+    it('should return null if there is not any bucket in project', async function () {
         const mock_config = {
             'user_id': '6',
-            'empty_project_id': '4',
             'project_id': '2'
         }
+        await redis.set(`bucket_index/${mock_config.user_id}/${mock_config.project_id}`, 100)
         await redis.zadd(`project/${mock_config.project_id}`, '4', '4', '7', '7', '16', '16', '32', '32')
-        const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.empty_project_id)
+        const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.project_id)
 
         assert.equal(result, null)
     })
