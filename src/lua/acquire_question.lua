@@ -25,7 +25,7 @@ local function acquire_question_of_specific_bucket(bucket_index)
     local indics_of_question_user_has_finished_key = string.format("user/%s/%s",user_id,project_id)
     local new_questions = redis.call('sdiff',indics_of_bucket_key,indics_of_question_user_has_finished_key)
 
-    return bucket_index
+    return new_questions
 end
 
 local function temp_acquire_question()
