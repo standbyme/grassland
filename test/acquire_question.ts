@@ -54,7 +54,7 @@ describe('Acquire Question', function () {
 
         const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.project_id, 1)
 
-        assert.equal(result, '5')
+        assert.equal(result.question_id, '5')
     })
 
     after(async function () {

@@ -70,7 +70,7 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout) {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<{ lock_id: string, question_id: string }> {
     const secret = 'grassland'
     const sha1_timestamp = crypto.createHmac('sha256', secret)
         .update(Date.now().toString())
@@ -78,7 +78,13 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
         .slice(0, 6)
     const lock_id = `${user_id}-${sha1_timestamp}`
     // @ts-ignore: acquire_question is defined by Lua
-    return redis.acquire_question(user_id, project_id, timeout, lock_id)
+    return redis.acquire_question(user_id, project_id, timeout, lock_id).then((question_id) => {
+        if (question_id == null) {
+            return null
+        } else {
+            return { lock_id, question_id }
+        }
+    })
 }
 
 function temp_acquire_question(redis: Redis.Redis, user_id: string, project_id: string, question_id: string, timeout: number = redis_config.lock_timeout) {
