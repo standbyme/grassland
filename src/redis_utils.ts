@@ -76,7 +76,7 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
         .update(Date.now().toString())
         .digest('hex')
         .slice(0, 6)
-    const lock_id = `${user_id}-${sha1_timestamp}`
+    const lock_id = `${user_id}-${project_id}-${sha1_timestamp}`
     // @ts-ignore: acquire_question is defined by Lua
     return redis.acquire_question(user_id, project_id, timeout, lock_id).then((question_id) => {
         if (question_id == null) {
