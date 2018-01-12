@@ -37,7 +37,7 @@ describe('Temp Acquire Question', function () {
             'user_id': '1',
             'project_id': '2',
             'question_id': '3',
-            'lock_secret': '6-e0eff6'
+            'lock_secret': 'e0eff6'
         }
         const key = `lock/${mock_config.user_id}-${mock_config.project_id}-${mock_config.question_id}-${mock_config.lock_secret}`
         await redis_utils.temp_acquire_question(redis, mock_config.user_id, mock_config.project_id, mock_config.question_id, 1, mock_config.lock_secret)

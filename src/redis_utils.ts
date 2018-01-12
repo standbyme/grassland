@@ -71,12 +71,12 @@ function connector() {
 }
 
 function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<{ lock_secret: string, question_id: string }> {
-    const secret = 'grassland'
+    const secret = Math.random().toString().slice(2, 8)
     const sha1_timestamp = crypto.createHmac('sha256', secret)
         .update(Date.now().toString())
         .digest('hex')
         .slice(0, 6)
-    const lock_secret = `${user_id}-${project_id}-${sha1_timestamp}`
+    const lock_secret = sha1_timestamp
     // @ts-ignore: acquire_question is defined by Lua
     return redis.acquire_question(user_id, project_id, timeout, lock_secret).then((question_id) => {
         if (question_id == null) {
