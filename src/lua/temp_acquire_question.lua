@@ -1,4 +1,4 @@
-local key = string.format("lock/%s",lock_id)
+local key = string.format("lock/%s",lock_secret)
 local value = string.format("%s/%s",project_id,question_id)
 
 redis.call('set', key, value)
