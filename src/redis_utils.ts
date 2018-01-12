@@ -1,5 +1,7 @@
 import * as crypto from 'crypto'
+import { Option } from 'funfix-core'
 import * as Redis from 'ioredis'
+
 const redis_config = {
     lock_timeout: 900,
     // 900s is 15min
@@ -70,7 +72,7 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<{ lock_secret: string, question_id: string }> {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<Option<{ lock_secret: string, question_id: string }>> {
     const secret = Math.random().toString().slice(2, 8)
     const sha1_timestamp = crypto.createHmac('sha256', secret)
         .update(Date.now().toString())
@@ -80,9 +82,9 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
     // @ts-ignore: acquire_question is defined by Lua
     return redis.acquire_question(user_id, project_id, timeout, lock_secret).then((question_id) => {
         if (question_id == null) {
-            return null
+            return Option.none()
         } else {
-            return { lock_secret, question_id }
+            return Option.of({ lock_secret, question_id })
         }
     })
 }

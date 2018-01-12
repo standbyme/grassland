@@ -4,6 +4,7 @@
   "description": "Data annotation system",
   "main": "index.js",
   "dependencies": {
+    "funfix-core": "^6.2.2",
     "ioredis": "^3.2.2",
     "lodash": "^4.17.4"
   },
