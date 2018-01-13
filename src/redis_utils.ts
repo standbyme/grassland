@@ -37,7 +37,12 @@ const redis_key = {
     },
     max_bucket_id_of_project: {
         template_str: 'max_bucket_id/<%= project_id %>'
+    },
+    tpl(tpl_name: string) {
+        const compiled = _.template(this[tpl_name].template_str)
+        return compiled
     }
+    // redis_key.tpl('bucket_ids_of_project')({ project_id: 6 })
 }
 
 function define_command(redis: Redis.Redis) {
