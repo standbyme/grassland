@@ -29,9 +29,11 @@ describe('Subscribe', function () {
         await publisher.expire('lock/1-2-3-l8fs26f', 1)
         await sleep(2)
         const result_2 = await publisher.llen('overtime/2')
+        const result_3 = await publisher.lpop('overtime/2')
         await subscriber.redis_disconnect()
-        assert.equal(result_1, 0)
-        assert.equal(result_2, 1)
+        assert(result_1 === 0)
+        assert(result_2 === 1)
+        assert(result_3 === '3')
     })
     after(function () {
         publisher.disconnect()
