@@ -104,6 +104,17 @@ const expired_strategy: SubscribeStrategyInterface = {
     }
 }
 
+const rpush_strategy: SubscribeStrategyInterface = {
+    config: 'l',
+    callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
+        const found = message.match(/^overtime\/(\w+)$/)
+        if (found) {
+            const [, project_id] = found
+            console.log(project_id)
+        }
+    }
+}
+
 function subscribe({ config, callback }: SubscribeStrategyInterface) {
     const subscriber_mode_redis = new Redis(redis_config.redis.port, redis_config.redis.host)
     const regular_mode_redis = new Redis(redis_config.redis.port, redis_config.redis.host)
@@ -118,4 +129,8 @@ function subscribe({ config, callback }: SubscribeStrategyInterface) {
     subscriber_mode_redis.on('pmessage', _.partial(callback, regular_mode_redis))
 }
 
-export { redis_config, raw_connector, connector, acquire_question, subscribe, expired_strategy }
+export {
+    redis_config, raw_connector, connector, acquire_question,
+    subscribe, expired_strategy,
+    rpush_strategy
+}
