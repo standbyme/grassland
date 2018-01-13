@@ -1,6 +1,7 @@
 import * as crypto from 'crypto'
 import { Option } from 'funfix-core'
 import * as Redis from 'ioredis'
+import * as _ from 'lodash'
 
 const redis_config = {
     lock_timeout: 900,
@@ -13,7 +14,6 @@ const redis_config = {
 function define_command(redis: Redis.Redis) {
     const fs = require('fs')
     const util = require('util')
-    const _ = require('lodash')
 
     interface CommandsInterface {
         [propName: string]: string[]
@@ -40,7 +40,7 @@ function define_command(redis: Redis.Redis) {
                     return { [dependency_command_name]: dependency_command_lua_script }
                 })
 
-                const dependency_command_name_with_file_content = _.merge(...dependency_command_name_with_file_content__list)
+                const dependency_command_name_with_file_content = _.merge({}, ...dependency_command_name_with_file_content__list)
 
                 // dependencies is like ['acquire_question']
                 // dependency_command_name_with_file_content is like {'acquire_question':the file content}
@@ -88,4 +88,35 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
     })
 }
 
-export { redis_config, raw_connector, connector, acquire_question }
+interface SubscribeStrategyInterface {
+    config: string,
+    callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void
+}
+
+const expired_strategy = {
+    config: 'x',
+    callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): [string, string] {
+        const found = message.match(/^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/)
+        if (found) {
+            const [, , project_id, question_id] = found
+            regular_mode_redis.rpush(`overtime/${project_id}`, question_id)
+            return [project_id, question_id]
+        }
+    }
+}
+
+function subscribe({ config, callback }: SubscribeStrategyInterface) {
+    const subscriber_mode_redis = new Redis(redis_config.redis.port, redis_config.redis.host)
+    const regular_mode_redis = new Redis(redis_config.redis.port, redis_config.redis.host)
+
+    this.redis_disconnect = () => {
+        subscriber_mode_redis.disconnect()
+        regular_mode_redis.disconnect()
+    }
+
+    subscriber_mode_redis.config('set', 'notify-keyspace-events', `${config}E`)
+    subscriber_mode_redis.psubscribe('__keyevent*__:expired')
+    subscriber_mode_redis.on('pmessage', _.partial(callback, regular_mode_redis))
+}
+
+export { redis_config, raw_connector, connector, acquire_question, subscribe, expired_strategy }
