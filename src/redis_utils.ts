@@ -176,5 +176,5 @@ function subscribe({ config, callback }: SubscribeStrategyInterface) {
 export {
     redis_config, raw_connector, connector, acquire_question,
     subscribe, expired_strategy,
-    rpush_strategy
+    rpush_strategy, redis_key
 }

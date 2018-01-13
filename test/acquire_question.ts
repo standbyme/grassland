@@ -11,6 +11,7 @@ describe('Acquire Question', function () {
     this.timeout(20000)
 
     const redis = redis_utils.connector()
+    const { redis_key } = redis_utils
 
     beforeEach(function () {
         redis.flushall()
