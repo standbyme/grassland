@@ -14,25 +14,25 @@ const redis_config = {
 }
 
 const redis_key = {
-    question_id_of_bucket: {
+    question_ids_of_bucket: {
         template_str: 'bucket/<%= project_id %>/<%= question_id %>'
     },
-    bucket_id_of_project: {
+    bucket_ids_of_project: {
         template_str: 'project/<%= project_id %>'
     },
-    user_id_of_question: {
+    user_ids_of_question: {
         template_str: 'question/<%= project_id %>/<%= question_id %>'
     },
-    question_id_of_user: {
+    question_ids_of_user: {
         template_str: 'user/<%= user_id %>/<%= project_id %>'
     },
-    bucket_id_of_user: {
+    bucket_ids_of_user: {
         template_str: 'bucket_id/<%= user_id %>/<%= project_id %>'
     },
     lock: {
         template_str: 'lock/<%= user_id %>-<%= project_id %>-<%= question_id %>-<%= lock_secret %>'
     },
-    overtime_question_of_project: {
+    overtime_question_ids_of_project: {
         template_str: 'overtime/<%= project_id %>'
     },
     max_bucket_id_of_project: {
