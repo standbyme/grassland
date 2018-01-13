@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@types/ioredis": "^3.2.5",
+    "@types/lodash": "^4.14.92",
     "@types/mocha": "^2.2.46",
     "@types/node": "^9.3.0",
     "del": "^3.0.0",
