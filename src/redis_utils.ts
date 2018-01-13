@@ -12,13 +12,20 @@ const redis_config = {
         port: 6379
     }
 }
-
-const redis_key = {
+interface Keys {
+    [propName: string]: {
+        template_str: string,
+        lua_str?: string,
+        re?: RegExp
+    },
+}
+const redis_key: Keys = {
     question_ids_of_bucket: {
         template_str: 'bucket/<%= project_id %>/<%= question_id %>'
     },
     bucket_ids_of_project: {
-        template_str: 'project/<%= project_id %>'
+        template_str: 'project/<%= project_id %>',
+        lua_str: 'project/%s'
     },
     user_ids_of_question: {
         template_str: 'question/<%= project_id %>/<%= question_id %>'
@@ -27,7 +34,8 @@ const redis_key = {
         template_str: 'user/<%= user_id %>/<%= project_id %>'
     },
     bucket_ids_of_user: {
-        template_str: 'bucket_id/<%= user_id %>/<%= project_id %>'
+        template_str: 'bucket_id/<%= user_id %>/<%= project_id %>',
+        lua_str: 'bucket_id/%s/%s'
     },
     lock: {
         template_str: 'lock/<%= user_id %>-<%= project_id %>-<%= question_id %>-<%= lock_secret %>',
@@ -40,12 +48,14 @@ const redis_key = {
     max_bucket_id_of_project: {
         template_str: 'max_bucket_id/<%= project_id %>'
     },
-    tpl(tpl_name: string) {
-        const compiled = _.template(this[tpl_name].template_str)
-        return compiled
-    }
-    // redis_key.tpl('bucket_ids_of_project')({ project_id: 6 })
+
 }
+
+function key_tpl(tpl_name: string) {
+    const compiled = _.template(redis_key[tpl_name].template_str)
+    return compiled
+}
+// redis_key.tpl('bucket_ids_of_project')({ project_id: 6 })
 
 function define_command(redis: Redis.Redis) {
     const fs = require('fs')
@@ -135,7 +145,7 @@ const expired_strategy: SubscribeStrategyInterface = {
         const found = message.match(redis_key.lock.re)
         if (found) {
             const [, , project_id, question_id] = found
-            regular_mode_redis.rpush(redis_key.tpl('overtime_question_ids_of_project')({ project_id }), question_id)
+            regular_mode_redis.rpush(key_tpl('overtime_question_ids_of_project')({ project_id }), question_id)
         }
     }
 }
@@ -176,5 +186,5 @@ function subscribe({ config, callback }: SubscribeStrategyInterface) {
 export {
     redis_config, raw_connector, connector, acquire_question,
     subscribe, expired_strategy,
-    rpush_strategy, redis_key
+    rpush_strategy, redis_key, key_tpl
 }
