@@ -95,12 +95,11 @@ interface SubscribeStrategyInterface {
 
 const expired_strategy = {
     config: 'x',
-    callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): [string, string] {
+    callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
         const found = message.match(/^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/)
         if (found) {
             const [, , project_id, question_id] = found
             regular_mode_redis.rpush(`overtime/${project_id}`, question_id)
-            return [project_id, question_id]
         }
     }
 }

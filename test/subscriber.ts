@@ -24,14 +24,6 @@ describe('Subscribe', function () {
             callback: redis_utils.expired_strategy.callback
         })
 
-        // function wrap(callback: (redis: Redis.Redis, a: string, b: string, message: string) => [string, string]) {
-        //     return function (redis: Redis.Redis, a: string, b: string, message: string) {
-        //         if (callback(redis, a, b, message)[0] === '2') {
-        //             subscriber.redis_disconnect()
-        //             done()
-        //         }
-        //     }
-        // }
         const result_1 = await publisher.llen('overtime/2')
         await publisher.set('lock/1-2-3-l8fs26f', 0)
         await publisher.expire('lock/1-2-3-l8fs26f', 1)
