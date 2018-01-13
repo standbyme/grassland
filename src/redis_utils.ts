@@ -135,7 +135,7 @@ const expired_strategy: SubscribeStrategyInterface = {
         const found = message.match(redis_key.lock.re)
         if (found) {
             const [, , project_id, question_id] = found
-            regular_mode_redis.rpush(`overtime/${project_id}`, question_id)
+            regular_mode_redis.rpush(redis_key.tpl('overtime_question_ids_of_project')({ project_id }), question_id)
         }
     }
 }
