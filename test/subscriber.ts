@@ -17,7 +17,7 @@ describe('Subscribe', function () {
         publisher.flushall()
     })
 
-    it('should return [project_id, question_id] of overtime question', async function () {
+    it('should push overtime question to overtime list', async function () {
         // @ts-ignore: new a function object
         const subscriber = new redis_utils.subscribe({
             config: redis_utils.expired_strategy.config,
