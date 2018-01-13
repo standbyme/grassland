@@ -30,10 +30,12 @@ const redis_key = {
         template_str: 'bucket_id/<%= user_id %>/<%= project_id %>'
     },
     lock: {
-        template_str: 'lock/<%= user_id %>-<%= project_id %>-<%= question_id %>-<%= lock_secret %>'
+        template_str: 'lock/<%= user_id %>-<%= project_id %>-<%= question_id %>-<%= lock_secret %>',
+        re: /^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/
     },
     overtime_question_ids_of_project: {
-        template_str: 'overtime/<%= project_id %>'
+        template_str: 'overtime/<%= project_id %>',
+        re: /^overtime\/(\w+)$/
     },
     max_bucket_id_of_project: {
         template_str: 'max_bucket_id/<%= project_id %>'
@@ -130,7 +132,7 @@ interface SubscribeStrategyInterface {
 const expired_strategy: SubscribeStrategyInterface = {
     config: 'x',
     callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
-        const found = message.match(/^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/)
+        const found = message.match(redis_key.lock.re)
         if (found) {
             const [, , project_id, question_id] = found
             regular_mode_redis.rpush(`overtime/${project_id}`, question_id)
@@ -149,7 +151,7 @@ function squeeze(list: string[]) {
 const rpush_strategy: SubscribeStrategyInterface = {
     config: 'l',
     callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
-        const found = message.match(/^overtime\/(\w+)$/)
+        const found = message.match(redis_key.overtime_question_ids_of_project.re)
         if (found) {
             const [, project_id] = found
             console.log(project_id)
