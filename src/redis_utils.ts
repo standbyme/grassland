@@ -6,6 +6,7 @@ import * as _ from 'lodash'
 const redis_config = {
     lock_timeout: 900,
     // 900s is 15min
+    capacity_of_bucket: 50,
     redis: {
         host: '127.0.0.1',
         port: 6379
@@ -102,6 +103,14 @@ const expired_strategy: SubscribeStrategyInterface = {
             regular_mode_redis.rpush(`overtime/${project_id}`, question_id)
         }
     }
+}
+
+function squeeze(list: string[]) {
+    const groupBy = _.flow([_.groupBy, _.values])
+    const groupBy_result = groupBy(list)
+    const only = _.map(groupBy_result, _.head)
+    const other = _.flatMap(groupBy_result, _.tail)
+    return { only, other }
 }
 
 const rpush_strategy: SubscribeStrategyInterface = {
