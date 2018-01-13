@@ -93,7 +93,7 @@ interface SubscribeStrategyInterface {
     callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void
 }
 
-const expired_strategy = {
+const expired_strategy: SubscribeStrategyInterface = {
     config: 'x',
     callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
         const found = message.match(/^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/)
