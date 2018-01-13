@@ -32,7 +32,7 @@ describe('Acquire Question', function () {
             'user_id': '6',
             'project_id': '2'
         }
-        await redis.set(`bucket_index/${mock_config.user_id}/${mock_config.project_id}`, 100)
+        await redis.set(`bucket_id/${mock_config.user_id}/${mock_config.project_id}`, 100)
         await redis.zadd(`project/${mock_config.project_id}`, '4', '4', '7', '7', '16', '16', '32', '32')
         const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.project_id)
 
@@ -44,7 +44,7 @@ describe('Acquire Question', function () {
             'user_id': '6',
             'project_id': '2'
         }
-        await redis.set(`bucket_index/${mock_config.user_id}/${mock_config.project_id}`, 8)
+        await redis.set(`bucket_id/${mock_config.user_id}/${mock_config.project_id}`, 8)
         await redis.zadd(`project/${mock_config.project_id}`, '4', '4', '7', '7', '16', '16', '32', '32')
         await redis.sadd(`bucket/${mock_config.project_id}/4`, 4, 5, 7)
         await redis.sadd(`bucket/${mock_config.project_id}/7`, 4, 5, 7, 11)
