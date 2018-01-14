@@ -1,5 +1,6 @@
 import * as assert from 'assert'
 import * as Redis from 'ioredis'
+import * as _ from 'lodash'
 
 import * as redis_utils from '../src/redis_utils'
 
@@ -38,13 +39,21 @@ describe('Subscribe', function () {
     it('when a question_id is rpushed to overtime list,it will check the amount of question_id in overtime list', async function () {
         // @ts-ignore: new a function object
         const subscriber = new redis_utils.subscribe(redis_utils.rpush_strategy)
-        const project_id = 2
+        const project_id = 6
         const key = `overtime/${project_id}`
+        const big_array = _.flatMap(_.range(1, 16), m => [m, m, m])
+        const small_array = [16, 16, 17, 18, 18, 18, 19, 20, 20]
+        // big_array has 45 elements
+        // small_array has 9 elements
         await sleep(0.2)
-        for (let i = 1; i <= 55; i++) {
-            await publisher.rpush(key, 16)
-        }
+        await publisher.rpush(key, ...big_array)
+        await publisher.rpush(key, ...small_array)
+        await sleep(1)
+        const result_1 = await publisher.scard(`bucket/${project_id}/1`)
+        const result_2 = await publisher.llen(key)
         await subscriber.redis_disconnect()
+        assert.equal(result_1, 18)
+        assert.equal(result_2, 36)
     })
 
     after(function () {

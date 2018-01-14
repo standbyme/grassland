@@ -156,8 +156,8 @@ const expired_strategy: SubscribeStrategyInterface = {
 function squeeze(list: string[]) {
     const groupBy = _.flow([_.groupBy, _.values])
     const groupBy_result = groupBy(list)
-    const only = _.map(groupBy_result, _.head)
-    const other = _.flatMap(groupBy_result, _.tail)
+    const only: string[] = Array.from(_.map(groupBy_result, _.head))
+    const other: string[] = Array.from(_.flatMap(groupBy_result, _.tail))
     return { only, other }
 }
 
@@ -170,12 +170,17 @@ const rpush_strategy: SubscribeStrategyInterface = {
             const [, project_id] = found
             const len = await regular_mode_redis.llen(message)
             if (len > redis_config.capacity_of_bucket) {
-                const [[, result]] = await regular_mode_redis
+                const [[, question_id__list]] = await regular_mode_redis
                     .pipeline()
                     .lrange(message, 0, redis_config.capacity_of_bucket - 1)
                     .ltrim(message, redis_config.capacity_of_bucket, -1)
                     .exec()
-                console.log(result)
+                const { only, other } = squeeze(question_id__list)
+                const question_id__set: Set<string> = new Set(only)
+                add_bucket(regular_mode_redis, { project_id, question_id__set }).catch(console.log)
+                if (!_.isEmpty(other)) {
+                    regular_mode_redis.lpush(key_tpl('overtime_question_ids_of_project')({ project_id }), ...other)
+                }
             }
         }
     }
