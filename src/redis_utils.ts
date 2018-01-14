@@ -39,6 +39,7 @@ const redis_key: Keys = {
     },
     lock: {
         template_str: 'lock/<%= user_id %>-<%= project_id %>-<%= question_id %>-<%= lock_secret %>',
+        lua_str: 'lock/%s-%s-%s-%s',
         re: /^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/
     },
     overtime_question_ids_of_project: {
