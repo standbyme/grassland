@@ -137,11 +137,13 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
 
 interface SubscribeStrategyInterface {
     config: string,
+    event: string,
     callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void
 }
 
 const expired_strategy: SubscribeStrategyInterface = {
     config: 'x',
+    event: 'expired',
     callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
         const found = message.match(redis_key.lock.re)
         if (found) {
@@ -161,16 +163,25 @@ function squeeze(list: string[]) {
 
 const rpush_strategy: SubscribeStrategyInterface = {
     config: 'l',
-    callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string): void {
+    event: 'rpush',
+    async callback(regular_mode_redis: Redis.Redis, a: string, b: string, message: string) {
         const found = message.match(redis_key.overtime_question_ids_of_project.re)
         if (found) {
             const [, project_id] = found
-            console.log(project_id)
+            const len = await regular_mode_redis.llen(message)
+            if (len > redis_config.capacity_of_bucket) {
+                const [[, result]] = await regular_mode_redis
+                    .pipeline()
+                    .lrange(message, 0, redis_config.capacity_of_bucket - 1)
+                    .ltrim(message, redis_config.capacity_of_bucket, -1)
+                    .exec()
+                console.log(result)
+            }
         }
     }
 }
 
-function subscribe({ config, callback }: SubscribeStrategyInterface) {
+function subscribe({ config, event, callback }: SubscribeStrategyInterface) {
     const subscriber_mode_redis = new Redis(redis_config.redis.port, redis_config.redis.host)
     const regular_mode_redis = new Redis(redis_config.redis.port, redis_config.redis.host)
 
@@ -180,7 +191,7 @@ function subscribe({ config, callback }: SubscribeStrategyInterface) {
     }
 
     subscriber_mode_redis.config('set', 'notify-keyspace-events', `${config}E`)
-    subscriber_mode_redis.psubscribe('__keyevent*__:expired')
+    subscriber_mode_redis.psubscribe(`__keyevent*__:${event}`)
     subscriber_mode_redis.on('pmessage', _.partial(callback, regular_mode_redis))
 }
 
