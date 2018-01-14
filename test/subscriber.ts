@@ -27,10 +27,12 @@ describe('Subscribe', function () {
         await sleep(2)
         const result_2 = await publisher.llen('overtime/2')
         const result_3 = await publisher.lpop('overtime/2')
+        const result_4 = await publisher.llen('overtime/2')
         await subscriber.redis_disconnect()
         assert(result_1 === 0)
         assert(result_2 === 1)
         assert(result_3 === '3')
+        assert(result_4 === 0)
     })
 
     // it('when a question_id is rpushed to overtime list,it will check the amount of question_id in overtime list', async function () {
