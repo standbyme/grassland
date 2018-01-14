@@ -21,7 +21,7 @@ interface Keys {
 }
 const redis_key: Keys = {
     question_ids_of_bucket: {
-        template_str: 'bucket/<%= project_id %>/<%= question_id %>'
+        template_str: 'bucket/<%= project_id %>/<%= bucket_id %>'
     },
     bucket_ids_of_project: {
         template_str: 'project/<%= project_id %>',
@@ -184,8 +184,26 @@ function subscribe({ config, callback }: SubscribeStrategyInterface) {
     subscriber_mode_redis.on('pmessage', _.partial(callback, regular_mode_redis))
 }
 
+interface BucketInterface {
+    project_id: string,
+    question_id__set: Set<string>
+}
+
+async function add_bucket(redis: Redis.Redis, bucket: BucketInterface) {
+    const { project_id, question_id__set } = bucket
+    const bucket_id = await redis.incr(key_tpl('max_bucket_id_of_project')({ project_id }))
+    const bucket_id_str = bucket_id.toString()
+    const promise = redis
+        .pipeline()
+        .sadd(key_tpl('question_ids_of_bucket')({ project_id, bucket_id }), ...question_id__set)
+        .zadd(key_tpl('bucket_ids_of_project')({ project_id }), bucket_id_str, bucket_id_str)
+        .exec()
+    return promise
+}
+
 export {
     redis_config, raw_connector, connector, acquire_question,
     subscribe, expired_strategy,
-    rpush_strategy, redis_key, key_tpl
+    rpush_strategy, redis_key, key_tpl,
+    add_bucket
 }
