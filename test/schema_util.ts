@@ -10,9 +10,6 @@ const exists = promisify(fs.exists)
 describe('JSON Schema', function () {
     const schema_util = new JSONSchemaUtil('test')
 
-    before(function () {
-    })
-
     it('should return true when schama wrong', async function () {
         const data = {
             'id': 1,

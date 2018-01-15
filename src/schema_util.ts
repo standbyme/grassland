@@ -23,9 +23,9 @@ class JSONSchemaUtil {
     }
 
     async file_schema_provider(question_or_answer: string, content_type_of_answer: string) {
-        const file_path = `schema/${question_or_answer}/${content_type_of_answer}`
-        if (await exists(`./${this.schema_dir}/${file_path}.ts`)) {
-            const schema = require(`../${this.schema_dir}/${file_path}`)
+        const file_path = `${this.schema_dir}/schema/${question_or_answer}/${content_type_of_answer}`
+        if (await exists(`./${file_path}.ts`)) {
+            const schema = require(`../${file_path}`)
             const validator = this.ajv.compile(schema)
             return Option.of(validator)
         } else {
