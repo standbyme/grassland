@@ -217,9 +217,15 @@ async function add_bucket(redis: Redis.Redis, bucket: BucketInterface) {
     return promise
 }
 
+async function del_info_of_question(redis: Redis.Redis, project_id: string, question_id: string) {
+    const user_ids_of_question_key = key_tpl('user_ids_of_question')({ project_id, question_id })
+    const user_ids_of_question = await redis.smembers(user_ids_of_question_key)
+    const commands = user_ids_of_question.map((user_id: string) => ['srem', key_tpl('question_ids_of_user')({ user_id, project_id }), question_id])
+    return Promise.all([redis.pipeline(commands).exec(), redis.del(user_ids_of_question_key)])
+}
 export {
     redis_config, raw_connector, connector, acquire_question,
     subscribe, expired_strategy,
     rpush_strategy, redis_key, key_tpl,
-    add_bucket
+    add_bucket, del_info_of_question
 }
