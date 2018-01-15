@@ -8,16 +8,10 @@ import { JSONSchemaUtil } from '../src/schema_util'
 const exists = promisify(fs.exists)
 
 describe('JSON Schema', function () {
-    const schema_util = new JSONSchemaUtil(mock_file_schema_provider)
+    const schema_util = new JSONSchemaUtil('test')
 
     before(function () {
     })
-
-    async function mock_file_schema_provider(question_or_answer: string, content_type_of_answer: string) {
-        const schema = require('./schema/stock')
-        const validator = this.ajv.compile(schema)
-        return Option.of(validator)
-    }
 
     it('should return true when schama wrong', async function () {
         const data = {
