@@ -171,7 +171,7 @@ const rpush_strategy: SubscribeStrategyInterface = {
             const len = await regular_mode_redis.llen(message)
             if (len > redis_config.capacity_of_bucket) {
                 const [[, question_id__list]] = await regular_mode_redis
-                    .pipeline()
+                    .multi()
                     .lrange(message, 0, redis_config.capacity_of_bucket - 1)
                     .ltrim(message, redis_config.capacity_of_bucket, -1)
                     .exec()
