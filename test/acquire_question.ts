@@ -39,6 +39,16 @@ describe('Acquire Question', function () {
         assert(result.isEmpty())
     })
 
+    it('should return null if user not join in project', async function () {
+        const mock_config = {
+            'user_id': 'uidxxx',
+            'project_id': 'pidxxx'
+        }
+        await redis.zadd('project/pidxxx', '4', '4', '6', '6', '9', '9')
+        const result = await redis_utils.acquire_question(redis, mock_config.user_id, mock_config.project_id)
+        assert(result.isEmpty())
+    })
+
     it('basic test', async function () {
         const mock_config = {
             'user_id': '6',

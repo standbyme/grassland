@@ -14,6 +14,10 @@ end
 
 local init_bucket_id = tonumber(redis.call('get',bucket_id_of_user_project_key))
 
+if (init_bucket_id==nil) then
+    return nil
+end
+
 local function temp_acquire_question(question_id)
     <%= temp_acquire_question %>
 end
