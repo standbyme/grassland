@@ -2,6 +2,7 @@ import * as assert from 'assert'
 import * as Redis from 'ioredis'
 
 import * as redis_utils from '../src/redis_utils'
+import { JSONSchemaUtil } from '../src/schema_util'
 import * as utils from '../src/utils'
 
 function sleep(s: number) {
@@ -13,6 +14,7 @@ describe('Save Unvalidated Answer', function () {
     this.timeout(20000)
 
     const redis = redis_utils.connector()
+    const schema_util = new JSONSchemaUtil('test')
 
     beforeEach(function () {
         redis.flushall()
@@ -43,8 +45,29 @@ describe('Save Unvalidated Answer', function () {
         await redis_utils.add_bucket(redis, bucket)
         const result = await redis_utils.acquire_question(redis, 'uidxxx', 'pidxxx')
         assert(result.nonEmpty())
-        const { question_id } = result.get()
+        const { question_id, lock_id } = result.get()
         assert(! await redis.sismember('user/uidxxx/qidxxx', question_id))
+        assert(
+            (await utils.save_unvalidated_answer(redis, schema_util, {}))
+                .fold(
+                error => `${error}`,
+                success => null
+                ) === 'format is wrong'
+        )
+        assert.equal(
+            (await utils.save_unvalidated_answer(redis, schema_util, { lock_id: 'faked', content: {} }))
+                .fold(
+                error => `${error}`,
+                success => null
+                ), 'lock_id not found'
+        )
+        assert.equal(
+            (await utils.save_unvalidated_answer(redis, schema_util, { lock_id, content: { 'wrong_schema': 6 } }))
+                .fold(
+                error => `${error}`,
+                success => null
+                ), 'content schema is wrong'
+        )
     })
 
     after(function () {

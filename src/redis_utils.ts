@@ -51,6 +51,9 @@ const redis_key: Keys = {
     max_bucket_id_of_project: {
         template_str: 'max_bucket_id/<%= project_id %>'
     },
+    content_type_of_answer: {
+        template_str: 'content_type/answer/<%= project_id %>'
+    }
 
 }
 
@@ -130,7 +133,7 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<Option<{ question_id: string }>> {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<Option<{ lock_id: string, question_id: string }>> {
     const secret = Math.random().toString().slice(2, 8)
     const sha1_timestamp = crypto.createHmac('sha256', secret)
         .update(Date.now().toString())
@@ -142,7 +145,8 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
         if (question_id == null) {
             return Option.none()
         } else {
-            return Option.of({ question_id })
+            const lock_id = `${user_id}-${project_id}-${question_id}-${lock_secret}`
+            return Option.of({ question_id, lock_id })
         }
     })
 }

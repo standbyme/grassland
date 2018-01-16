@@ -1,6 +1,9 @@
-import { Option } from 'funfix-core'
+import { Failure, Option, Try } from 'funfix-core'
 import * as Redis from 'ioredis'
 import * as _ from 'lodash'
+
+import * as redis_utils from '../src/redis_utils'
+import { JSONSchemaUtil } from '../src/schema_util'
 
 interface AnswerInterface {
     lock_id: string,
@@ -17,8 +20,15 @@ function isAnswerInterface(x: any): x is AnswerInterface {
     return false
 }
 
-async function save_unvalidated_answer(redis: Redis.Redis, answer: object) {
-    return isAnswerInterface(answer)
+async function save_unvalidated_answer(redis: Redis.Redis, schema_util: JSONSchemaUtil, answer: object): Promise<Try<string>> {
+    if (!isAnswerInterface(answer)) return Failure('format is wrong')
+    const { lock_id, content } = answer
+    if (!(await redis.exists(`lock/${lock_id}`))) return Failure('lock_id not found')
+    const lock_info = redis_utils.parse_lock_id(lock_id)
+    if (lock_info.isEmpty()) return Failure('lock_id is wrong')
+    const { user_id, project_id, question_id } = lock_info.get()
+    const content_type_of_answer = await redis.get(redis_utils.key_tpl('content_type_of_answer')({ project_id }))
+    if (!(await schema_util.content_validate(content_type_of_answer, content))) return Failure('content schema is wrong')
 }
 
-export { isAnswerInterface }
+export { isAnswerInterface, save_unvalidated_answer }
