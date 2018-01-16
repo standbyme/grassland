@@ -16,7 +16,8 @@ interface Keys {
     [propName: string]: {
         template_str: string,
         lua_str?: string,
-        re?: RegExp
+        re?: RegExp,
+        id_re?: RegExp
     },
 }
 const redis_key: Keys = {
@@ -40,7 +41,8 @@ const redis_key: Keys = {
     lock: {
         template_str: 'lock/<%= user_id %>-<%= project_id %>-<%= question_id %>-<%= lock_secret %>',
         lua_str: 'lock/%s-%s-%s-%s',
-        re: /^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/
+        re: /^lock\/(\w+)-(\w+)-(\w+)-(\w+)$/,
+        id_re: /^(\w+)-(\w+)-(\w+)-(\w+)$/
     },
     overtime_question_ids_of_project: {
         template_str: 'overtime/<%= project_id %>',
@@ -57,6 +59,16 @@ function key_tpl(tpl_name: string) {
     return compiled
 }
 // redis_key.tpl('bucket_ids_of_project')({ project_id: 6 })
+
+function parse_lock_id(lock_id: string) {
+    const found = lock_id.match(redis_key.lock.id_re)
+    if (found) {
+        const [, user_id, project_id, question_id, lock_secret] = found
+        return Option.of({ user_id, project_id, question_id, lock_secret })
+    } else {
+        return Option.none()
+    }
+}
 
 function define_command(redis: Redis.Redis) {
     const fs = require('fs')
@@ -227,5 +239,5 @@ export {
     redis_config, raw_connector, connector, acquire_question,
     subscribe, expired_strategy,
     rpush_strategy, redis_key, key_tpl,
-    add_bucket, del_info_of_question
+    add_bucket, del_info_of_question, parse_lock_id
 }
