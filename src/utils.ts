@@ -30,8 +30,10 @@ async function save_unvalidated_answer(redis: Redis.Redis, schema_util: JSONSche
     const { user_id, project_id, question_id } = lock_info.get()
     const content_type_of_answer = await redis.get(redis_utils.key_tpl('content_type_of_answer')({ project_id }))
     if (!(await schema_util.content_validate(content_type_of_answer, content))) return Failure('content schema is wrong')
-    await redis.del(lock_key)
-    await redis.sadd(redis_utils.key_tpl('question_ids_of_user')({ user_id, project_id }), question_id)
+    await redis.pipeline()
+        .del(lock_key)
+        .sadd(redis_utils.key_tpl('question_ids_of_user')({ user_id, project_id }), question_id)
+        .exec()
     return Success('OK')
 }
 
