@@ -68,6 +68,14 @@ describe('Save Unvalidated Answer', function () {
                 success => null
                 ), 'content schema is wrong'
         )
+        const lock_key = `lock/${lock_id}`
+        assert(await (redis.exists(lock_key)))
+        assert(
+            (await utils.save_unvalidated_answer(redis, schema_util, { lock_id, content: { 'material': 'ok', 'field': 'yes' } }))
+                .isSuccess()
+        )
+        assert((await redis.sismember('user/uidxxx/pidxxx', question_id)))
+        assert(!(await redis.exists(lock_key)))
     })
 
     after(function () {
