@@ -37,4 +37,8 @@ async function save_unvalidated_answer(redis: Redis.Redis, schema_util: JSONSche
     return Success('OK')
 }
 
+async function save_validated_answer(user_id: string, project_id: string, question_id: string, content: object) {
+
+}
+
 export { isAnswerInterface, save_unvalidated_answer }
