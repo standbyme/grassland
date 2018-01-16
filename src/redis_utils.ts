@@ -130,7 +130,7 @@ function connector() {
     return redis_defined_command
 }
 
-function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<Option<{ lock_secret: string, question_id: string }>> {
+function acquire_question(redis: Redis.Redis, user_id: string, project_id: string, timeout: number = redis_config.lock_timeout): Promise<Option<{ question_id: string }>> {
     const secret = Math.random().toString().slice(2, 8)
     const sha1_timestamp = crypto.createHmac('sha256', secret)
         .update(Date.now().toString())
@@ -142,7 +142,7 @@ function acquire_question(redis: Redis.Redis, user_id: string, project_id: strin
         if (question_id == null) {
             return Option.none()
         } else {
-            return Option.of({ lock_secret, question_id })
+            return Option.of({ question_id })
         }
     })
 }
