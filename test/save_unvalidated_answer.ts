@@ -2,6 +2,7 @@ import * as assert from 'assert'
 import * as Redis from 'ioredis'
 
 import * as redis_utils from '../src/redis_utils'
+import * as utils from '../src/utils'
 
 function sleep(s: number) {
     return new Promise(resolve => setTimeout(resolve, s * 1000))
@@ -15,6 +16,19 @@ describe('Save Unvalidated Answer', function () {
 
     beforeEach(function () {
         redis.flushall()
+    })
+
+    it('isAnswerInterface test', function () {
+        const wrong = {
+            lock_id: '123',
+            content: '6'
+        }
+        const right = {
+            lock_id: '123',
+            content: { title: 'happy' }
+        }
+        assert(!utils.isAnswerInterface(wrong))
+        assert(utils.isAnswerInterface(right))
     })
 
     it('basic test', async function () {
