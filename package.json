@@ -4,10 +4,12 @@
   "description": "Data annotation system",
   "main": "index.js",
   "dependencies": {
+    "@types/mongodb": "^3.0.1",
     "ajv": "^6.0.1",
     "funfix-core": "^6.2.2",
     "ioredis": "^3.2.2",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "mongodb": "^3.0.1"
   },
   "devDependencies": {
     "@types/ioredis": "^3.2.5",
