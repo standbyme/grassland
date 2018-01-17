@@ -12,7 +12,7 @@ async function get_required_amount_of_replenish_question(db: Db, project_id: str
 
 async function get_replenish_question_ids(db: Db, project_id: string, amount_of_replenish_question: number): Promise<Set<string>> {
     const col = db.collection(`project.${project_id}.question`)
-    const question_ids = (await col.find({ 'is_in_bucket': false }).limit(amount_of_replenish_question).toArray()).map((m: any) => m._id.toHexString())
+    const question_ids = (await col.find({ 'is_in_bucket': false }).limit(amount_of_replenish_question).toArray()).map((m: { _id: ObjectID }) => m._id.toHexString())
     return new Set(question_ids)
 }
 
