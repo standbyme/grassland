@@ -7,6 +7,7 @@ const redis_config = {
     lock_timeout: 900,
     // 900s is 15min
     capacity_of_bucket: 50,
+    required_amount_of_bucket: 20,
     redis: {
         host: '127.0.0.1',
         port: 6379
