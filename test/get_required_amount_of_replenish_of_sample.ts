@@ -12,7 +12,7 @@ describe('Get Required Amount of Replenish Of Sample', function () {
         const col = db.collection('project')
         //////
         const { insertedId } = await col.insertOne({ 'required_amount_of_sample': 3 })
-        assert.equal((await db_utils.get_required_amount_of_replenish_of_sample(db, insertedId.toHexString())), 333)
+        assert.equal((await db_utils.get_required_amount_of_replenish_question(db, insertedId.toHexString())), 333)
 
         //////
         await client.close()
