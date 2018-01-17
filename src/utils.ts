@@ -5,10 +5,7 @@ import * as _ from 'lodash'
 import * as redis_utils from '../src/redis_utils'
 import { JSONSchemaUtil } from '../src/schema_util'
 
-interface AnswerInterface {
-    lock_id: string,
-    content: object
-}
+import { AnswerInterface, BucketInterface } from './interface'
 /* tslint:disable:no-any*/
 function isAnswerInterface(x: any): x is AnswerInterface {
     /* tslint:enable:no-any*/
@@ -40,5 +37,14 @@ async function save_unvalidated_answer(redis: Redis.Redis, schema_util: JSONSche
 async function save_validated_answer(user_id: string, project_id: string, question_id: string, content: object) {
 
 }
-
+function make_bucket(project_id: string, question_id__set: Set<string>): BucketInterface {
+    return { project_id, question_id__set }
+}
+function make_buckets(project_id: string, question_id__set: Set<string>): BucketInterface[] {
+    const question_id__list = [...question_id__set]
+    const result = _.chunk(question_id__list, redis_utils.redis_config.capacity_of_bucket)
+        .map((m: string[]) => new Set(m))
+        .map((m: Set<string>) => make_bucket(project_id, question_id__set))
+    return result
+}
 export { isAnswerInterface, save_unvalidated_answer }

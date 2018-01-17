@@ -3,6 +3,7 @@ import { Option } from 'funfix-core'
 import * as Redis from 'ioredis'
 import * as _ from 'lodash'
 
+import { BucketInterface } from './interface'
 const redis_config = {
     lock_timeout: 900,
     // 900s is 15min
@@ -215,11 +216,6 @@ function subscribe({ config, event, callback }: SubscribeStrategyInterface) {
     subscriber_mode_redis.config('set', 'notify-keyspace-events', `${config}E`)
     subscriber_mode_redis.psubscribe(`__keyevent*__:${event}`)
     subscriber_mode_redis.on('pmessage', _.partial(callback, regular_mode_redis))
-}
-
-interface BucketInterface {
-    project_id: string,
-    question_id__set: Set<string>
 }
 
 async function add_bucket(redis: Redis.Redis, bucket: BucketInterface) {
