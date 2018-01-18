@@ -1,3 +1,4 @@
+import { Option } from 'funfix-core'
 import { Db, MongoClient, ObjectID } from 'mongodb'
 
 import { redis_config } from './redis_utils'
@@ -16,4 +17,9 @@ async function get_replenish_question_ids(db: Db, project_id: string, amount_of_
     return new Set(question_ids)
 }
 
-export { get_required_amount_of_replenish_question, get_replenish_question_ids }
+async function get_question(db: Db, project_id: string, question_id: string) {
+    const col = db.collection(`project.${project_id}.question`)
+    const result = await col.findOne({ '_id': ObjectID.createFromHexString(question_id) })
+    return Option.of(result)
+}
+export { get_required_amount_of_replenish_question, get_replenish_question_ids, get_question }
