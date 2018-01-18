@@ -236,9 +236,18 @@ async function del_info_of_question(redis: Redis.Redis, project_id: string, ques
     const commands = user_ids_of_question.map((user_id: string) => ['srem', key_tpl('question_ids_of_user')({ user_id, project_id }), question_id])
     return Promise.all([redis.pipeline(commands).exec(), redis.del(user_ids_of_question_key)])
 }
+
+async function is_needed_to_replenish_question(redis: Redis.Redis, project_id: string, bucket_id: string): Promise<boolean> {
+    const rank = await redis.zrevrank(key_tpl('bucket_ids_of_project')({ project_id }), bucket_id)
+    if (rank) {
+        return (rank < (redis_config.required_amount_of_bucket / 2))
+    }
+    return false
+}
+
 export {
     redis_config, raw_connector, connector, acquire_question,
     subscribe, expired_strategy,
     rpush_strategy, redis_key, key_tpl,
-    add_bucket, del_info_of_question, parse_lock_id
+    add_bucket, del_info_of_question, parse_lock_id, is_needed_to_replenish_question
 }
