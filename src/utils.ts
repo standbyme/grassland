@@ -1,7 +1,9 @@
 import { Failure, Option, Success, Try } from 'funfix-core'
 import * as Redis from 'ioredis'
 import * as _ from 'lodash'
+import { Db } from 'mongodb'
 
+import * as db_utils from '../src/db_utils'
 import * as redis_utils from '../src/redis_utils'
 import { JSONSchemaUtil } from '../src/schema_util'
 
@@ -47,4 +49,13 @@ function make_buckets(project_id: string, question_id__set: Set<string>): Bucket
         .map((m: Set<string>) => make_bucket(project_id, question_id__set))
     return result
 }
-export { isAnswerInterface, save_unvalidated_answer }
+
+async function check_and_replenish_question(redis: Redis.Redis, db: Db, project_id: string, bucket_id: string) {
+    if (await redis_utils.is_needed_to_replenish_question(redis, project_id, bucket_id)) {
+        const amount_of_replenish_question = await db_utils.get_required_amount_of_replenish_question(db, project_id)
+        const replenish_question_id__set = await db_utils.get_replenish_question_ids(db, project_id, amount_of_replenish_question)
+        const buckets = make_buckets(project_id, replenish_question_id__set)
+        await Promise.all(buckets.map(bucket => redis_utils.add_bucket(redis, bucket)))
+    }
+}
+export { isAnswerInterface, save_unvalidated_answer, check_and_replenish_question }
